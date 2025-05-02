@@ -26,5 +26,7 @@ public class TransactionDto {
     LocalDateTime createdAt;
 
     String description;
+
+    Long categoryId;
     
 }
