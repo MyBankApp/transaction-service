@@ -1,0 +1,1 @@
+ALTER TABLE transaction ADD CONSTRAINT transaction_categoryid_foreign FOREIGN KEY(category_id) REFERENCES category(id);

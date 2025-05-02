@@ -24,4 +24,6 @@ public class UpdateTransactionDto {
 
     String description;
 
+    Long categoryId;
+
 }

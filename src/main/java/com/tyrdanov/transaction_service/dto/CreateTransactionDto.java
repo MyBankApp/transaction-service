@@ -20,4 +20,7 @@ public class CreateTransactionDto {
     Status status;
 
     String description;
+
+    Long categoryId;
+    
 }

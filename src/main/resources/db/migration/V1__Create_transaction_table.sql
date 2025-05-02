@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS transaction (
     currency VARCHAR NOT NULL,
     status VARCHAR NOT NULL,
     created_at TIMESTAMP NOT NULL,
-    description TEXT
+    description TEXT,
+    category_id SERIAL NOT NULL
 );
 
 ALTER TABLE transaction ADD CONSTRAINT check_currency CHECK (currency IN ('RUB', 'USD', 'EUR'));
