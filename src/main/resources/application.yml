@@ -1,0 +1,13 @@
+server:
+  servlet:
+    context-path: /api/
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/transaction_service
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
