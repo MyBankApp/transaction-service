@@ -23,7 +23,7 @@ public interface CategoryMapper {
     @Mapping(target = "transactions", ignore = true)
     Category toModel(CreateCategoryDto dto);
 
-    void update(CategoryDto dto, @MappingTarget Category category);
+    void update(CategoryDto dto, List<Transaction> transactions, @MappingTarget Category category);
 
     @Named("getTransactionUuids")
     default List<UUID> getTransactionUuids(Category category) {
@@ -33,4 +33,5 @@ public interface CategoryMapper {
                 .map(Transaction::getId)
                 .toList();
     }
+
 }

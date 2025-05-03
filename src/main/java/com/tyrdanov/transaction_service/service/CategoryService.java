@@ -9,6 +9,7 @@ import com.tyrdanov.transaction_service.dto.CreateCategoryDto;
 import com.tyrdanov.transaction_service.exception.ResourceNotFoundException;
 import com.tyrdanov.transaction_service.mapper.CategoryMapper;
 import com.tyrdanov.transaction_service.repository.CategoryRepository;
+import com.tyrdanov.transaction_service.repository.TransactionRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +19,7 @@ public class CategoryService {
 
     private final CategoryMapper mapper;
     private final CategoryRepository repository;
+    private final TransactionRepository transactionRepository;
 
     public List<CategoryDto> getAll() {
         return repository
@@ -44,11 +46,13 @@ public class CategoryService {
 
     public CategoryDto update(CategoryDto dto) {
         final var id = dto.getId();
+        final var uuids = dto.getTransactionUuids();
         final var category = repository.findById(id).orElseThrow(
             () -> new ResourceNotFoundException("Category not found")
         );
+        final var transactions = transactionRepository.findAllById(uuids);
 
-        mapper.update(dto,category);
+        mapper.update(dto, transactions, category);
 
         final var updatedCategory = repository.save(category);
 
