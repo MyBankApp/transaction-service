@@ -3,6 +3,11 @@ package com.tyrdanov.transaction_service.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import com.tyrdanov.transaction_service.dto.CreateTransactionDto;
@@ -17,12 +22,14 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "transactions")
 public class TransactionService {
 
     private final TransactionMapper mapper;
     private final TransactionRepository repository;
     private final CategoryRepository categoryRepository;
 
+    @Cacheable(cacheNames = "allTransactions")
     public List<TransactionDto> getAll() {
         return repository
                 .findAll()
@@ -31,6 +38,7 @@ public class TransactionService {
                 .toList();
     }
 
+    @Cacheable(key = "#id")
     public TransactionDto getById(UUID id) {
         final var transaction = repository.findById(id).orElseThrow(
             () -> new ResourceNotFoundException("Transaction not found")
@@ -39,6 +47,10 @@ public class TransactionService {
         return mapper.toDto(transaction);
     }
 
+    @Caching(
+        put = @CachePut(key = "#result.id"),
+        evict = @CacheEvict(cacheNames = "allTransactions", allEntries = true)
+    )
     public TransactionDto create(CreateTransactionDto dto) {
         final var categoryId = dto.getCategoryId();
         final var category = categoryRepository.findById(categoryId).orElseThrow(
@@ -53,6 +65,10 @@ public class TransactionService {
         return mapper.toDto(createdTransaction);
     }
 
+    @Caching(
+        put = @CachePut(key = "#dto.id"),
+        evict = @CacheEvict(cacheNames = "allTransactions", allEntries = true)
+    )
     public TransactionDto update(UpdateTransactionDto dto) {
         final var uuid = dto.getId();
         final var categoryId = dto.getCategoryId();
@@ -70,6 +86,12 @@ public class TransactionService {
         return mapper.toDto(updatedTransaction);
     }
 
+    @Caching(
+        evict = {
+            @CacheEvict(key = "#id"),
+            @CacheEvict(cacheNames = "allTransactions", allEntries = true)
+        }
+    )
     public void delete(UUID id) {
         repository.deleteById(id);
     }
