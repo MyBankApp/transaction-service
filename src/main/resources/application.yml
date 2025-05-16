@@ -4,6 +4,8 @@ server:
     context-path: /api/
 
 spring:
+  application:
+    name: transaction-service
   datasource:
     url: jdbc:postgresql://localhost:5432/transaction_service
     username: postgres
