@@ -5,9 +5,11 @@ CREATE TABLE IF NOT EXISTS transaction (
     status VARCHAR NOT NULL,
     created_at TIMESTAMP NOT NULL,
     description TEXT,
-    category_id SERIAL NOT NULL
+    category_id SERIAL NOT NULL,
+    sender_id SERIAL NOT NULL,
+    receiver_id SERIAL NOT NULL
 );
 
 ALTER TABLE transaction ADD CONSTRAINT check_currency CHECK (currency IN ('RUB', 'USD', 'EUR'));
 
-ALTER TABLE transaction ADD CONSTRAINT check_status CHECK (status IN ('PENDING', 'COMPLETED', 'FAILED', 'CANCELLED'));
+ALTER TABLE transaction ADD CONSTRAINT check_status CHECK (status IN ('PENDING', 'COMPLETED', 'FAILED'));

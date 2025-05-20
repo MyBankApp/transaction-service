@@ -34,64 +34,56 @@ public class TransactionService {
         return repository
                 .findAll()
                 .stream()
-                .map(mapper::toDto)
+                .map(mapper::toTransactionDto)
                 .toList();
     }
 
     @Cacheable(key = "#id")
     public TransactionDto getById(UUID id) {
-        final var transaction = repository.findById(id).orElseThrow(
-            () -> new ResourceNotFoundException("Transaction not found")
-        );
+        final var transaction = repository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
 
-        return mapper.toDto(transaction);
+        return mapper.toTransactionDto(transaction);
     }
 
-    @Caching(
-        put = @CachePut(key = "#result.id"),
-        evict = @CacheEvict(cacheNames = "allTransactions", allEntries = true)
-    )
+    @Caching(put = @CachePut(key = "#result.id"), evict = @CacheEvict(cacheNames = "allTransactions", allEntries = true))
     public TransactionDto create(CreateTransactionDto dto) {
         final var categoryId = dto.getCategoryId();
-        final var category = categoryRepository.findById(categoryId).orElseThrow(
-            () -> new ResourceNotFoundException("Category not found")
-        );
-        final var transaction = mapper.toModel(dto, category);
+        final var category = categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        final var transaction = mapper.toModelFromDto(dto, category);
 
         transaction.setCategory(category);
-        
+
         final var createdTransaction = repository.save(transaction);
 
-        return mapper.toDto(createdTransaction);
+        return mapper.toTransactionDto(createdTransaction);
     }
 
-    @Caching(
-        put = @CachePut(key = "#dto.id"),
-        evict = @CacheEvict(cacheNames = "allTransactions", allEntries = true)
-    )
+    @Caching(put = @CachePut(key = "#dto.id"), evict = @CacheEvict(cacheNames = "allTransactions", allEntries = true))
     public TransactionDto update(UpdateTransactionDto dto) {
         final var uuid = dto.getId();
         final var categoryId = dto.getCategoryId();
-        final var transaction = repository.findById(uuid).orElseThrow(
-            () -> new ResourceNotFoundException("Transaction not found")
-        );
-        final var category = categoryRepository.findById(categoryId).orElseThrow(
-            () -> new ResourceNotFoundException("Category not found")
-        );
-        
+        final var transaction = repository
+                .findById(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
+        final var category = categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
         mapper.update(dto, category, transaction);
 
         final var updatedTransaction = repository.save(transaction);
 
-        return mapper.toDto(updatedTransaction);
+        return mapper.toTransactionDto(updatedTransaction);
     }
 
-    @Caching(
-        evict = {
+    @Caching(evict = {
             @CacheEvict(key = "#id"),
             @CacheEvict(cacheNames = "allTransactions", allEntries = true)
-        }
-    )
+    })
     public void delete(UUID id) {
         repository.deleteById(id);
     }

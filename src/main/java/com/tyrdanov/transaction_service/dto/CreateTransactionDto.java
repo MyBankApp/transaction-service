@@ -21,9 +21,13 @@ public class CreateTransactionDto {
 
     Currency currency;
 
-    Status status;
+    Status status = Status.PENDING;
 
     String description;
+
+    Long senderId;
+
+    Long receiverId;
 
     Long categoryId;
     

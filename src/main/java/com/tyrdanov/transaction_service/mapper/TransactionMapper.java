@@ -1,7 +1,5 @@
 package com.tyrdanov.transaction_service.mapper;
 
-import java.time.LocalDateTime;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -17,16 +15,11 @@ import com.tyrdanov.transaction_service.model.Transaction;
 public interface TransactionMapper {
     
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", source = "dto", qualifiedByName = "getCreatedAt")
-    @Mapping(target = "amount", source = "dto.amount")
-    @Mapping(target = "currency", source = "dto.currency")
-    @Mapping(target = "status", source = "dto.status")
-    @Mapping(target = "description", source = "dto.description")
-    @Mapping(target = "category", source = "category")
-    Transaction toModel(CreateTransactionDto dto, Category category);
+    @Mapping(target = "createdAt", ignore = true)
+    Transaction toModelFromDto(CreateTransactionDto dto, Category category);
 
     @Mapping(target = "categoryId", source = ".", qualifiedByName = "getCategoryId")
-    TransactionDto toDto(Transaction transaction);
+    TransactionDto toTransactionDto(Transaction transaction);
 
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "transaction.id", source = "dto.id")
@@ -37,8 +30,4 @@ public interface TransactionMapper {
         return transaction.getCategory().getId();
     }
 
-    @Named("getCreatedAt")
-    default LocalDateTime getCreatedAt(CreateTransactionDto dto) {
-        return LocalDateTime.now();
-    }
 }

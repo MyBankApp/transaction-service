@@ -31,6 +31,10 @@ public class TransactionDto {
 
     String description;
 
+    Long senderId;
+
+    Long receiverId;
+
     Long categoryId;
     
 }
