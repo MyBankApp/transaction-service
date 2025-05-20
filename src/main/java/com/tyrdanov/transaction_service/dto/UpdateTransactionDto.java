@@ -28,6 +28,10 @@ public class UpdateTransactionDto {
 
     String description;
 
+    Long senderId;
+
+    Long receiverId;
+
     Long categoryId;
 
 }

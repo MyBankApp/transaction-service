@@ -44,7 +44,7 @@ public class Transaction {
     Currency currency;
 
     @Enumerated(EnumType.STRING)
-    Status status;
+    Status status = Status.PENDING;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -57,4 +57,9 @@ public class Transaction {
     @JoinColumn(name="category_id", nullable = false)
     Category category;
 
+    @Column(name = "sender_id")
+    Long senderId;
+
+    @Column(name = "receiver_id")
+    Long receiverId;
 }
