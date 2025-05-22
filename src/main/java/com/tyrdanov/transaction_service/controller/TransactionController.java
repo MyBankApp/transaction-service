@@ -36,6 +36,11 @@ public class TransactionController {
         return service.getById(id);
     }
 
+    @GetMapping("/user/{senderId}")
+    public List<TransactionDto> getAllByUserId(@PathVariable Long senderId) {
+        return service.getAllByUserId(senderId);
+    }
+
     @PostMapping
     public TransactionDto create(@RequestBody CreateTransactionDto dto) {
         return service.create(dto);
