@@ -47,7 +47,16 @@ public class TransactionService {
         return mapper.toTransactionDto(transaction);
     }
 
-    @Caching(put = @CachePut(key = "#result.id"), evict = @CacheEvict(cacheNames = "allTransactions", allEntries = true))
+    @Cacheable(cacheNames = "userTransactions")
+    public List<TransactionDto> getAllByUserId(Long senderId) {
+        return repository
+                .findAllByUserId(senderId)
+                .stream()
+                .map(mapper::toTransactionDto)
+                .toList();
+    }
+
+    @Caching(put = @CachePut(key = "#result.id"), evict = @CacheEvict(cacheNames = {"allTransactions", "userTransactions"}, allEntries = true))
     public TransactionDto create(CreateTransactionDto dto) {
         final var categoryId = dto.getCategoryId();
         final var category = categoryRepository
@@ -62,7 +71,7 @@ public class TransactionService {
         return mapper.toTransactionDto(createdTransaction);
     }
 
-    @Caching(put = @CachePut(key = "#dto.id"), evict = @CacheEvict(cacheNames = "allTransactions", allEntries = true))
+    @Caching(put = @CachePut(key = "#dto.id"), evict = @CacheEvict(cacheNames = {"allTransactions", "userTransactions"}, allEntries = true))
     public TransactionDto update(UpdateTransactionDto dto) {
         final var uuid = dto.getId();
         final var categoryId = dto.getCategoryId();
@@ -82,7 +91,7 @@ public class TransactionService {
 
     @Caching(evict = {
             @CacheEvict(key = "#id"),
-            @CacheEvict(cacheNames = "allTransactions", allEntries = true)
+            @CacheEvict(cacheNames = {"allTransactions", "userTransactions"}, allEntries = true)
     })
     public void delete(UUID id) {
         repository.deleteById(id);
